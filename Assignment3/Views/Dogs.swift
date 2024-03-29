@@ -39,5 +39,6 @@ struct Dogs: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         Dogs()
+            .preferredColorScheme(.dark)
     }
 }

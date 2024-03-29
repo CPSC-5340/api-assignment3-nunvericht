@@ -14,7 +14,9 @@ struct DogResults : Codable {
 }
 
 struct DogModel : Codable, Identifiable {
-    let id: Int
+    var id : UUID {
+        return UUID()
+    }
     let name: String
     let weight: DogWeight
     let height: DogHeight
