@@ -14,16 +14,18 @@ struct Dogs: View {
     var body: some View {
         NavigationStack {
             List {
-                /*ForEach(dogsvm.jsonData) {dog in
+                ForEach(dogsvm.dogBreeds) {
+                    dog in
                     NavigationLink {
-                        DogDetail(dog: dog)
-                    } label: {
-                        Text(dog.name)
+                        DogDetail(dogModel: dog, dogImage: dogsvm.dogImage)
+                    }
+                    label: {
+                    Text(dog.name)
                     }
                 }
             }
             .task {
-                await dogsvm.fetchData()*/
+                    await dogsvm.fetchData()
             }
             .listStyle(.grouped)
             .navigationTitle("Dogs")
