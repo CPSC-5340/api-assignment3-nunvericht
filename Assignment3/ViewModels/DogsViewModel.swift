@@ -19,10 +19,10 @@ class DogsViewModel : ObservableObject {
     
     @Published var error : DogModelError?
     
-    // Boolean to stop after 10, since api returns random results
+    // Boolean to stop after 14, since api returns random results
     private var hasFetchedData = false
     
-    private let url = "https://api.thedogapi.com/v1/images/search?limit=10&has_breeds=1&page=0&api_key=live_dol1qAd0D537Mg7sAefdiNUO7YdHErkkyac39Io7mVnqvQCda3makEkQ9mI56GRS"
+    private let url = "https://api.thedogapi.com/v1/images/search?limit=14&has_breeds=1&page=0&api_key=live_dol1qAd0D537Mg7sAefdiNUO7YdHErkkyac39Io7mVnqvQCda3makEkQ9mI56GRS"
     
     @MainActor
     func fetchData() async {
@@ -35,8 +35,7 @@ class DogsViewModel : ObservableObject {
                 do {
                     let (data, _) = try await URLSession.shared.data(from: apiUrl)
                     guard let results = try JSONDecoder().decode([DogResults]?.self, from: data) else {
-                        self.hasError.toggle()
-                        self.error = DogModelError.decodeError
+                        handleError(DogModelError.decodeError)
                         return
                     }
                     for result in results {
@@ -44,23 +43,25 @@ class DogsViewModel : ObservableObject {
                         self.dogBreeds.append(contentsOf: result.breeds)
                     }
                     hasFetchedData = true
+                    hasError = false
                     return
                 }
                 catch {
-                    self.hasError.toggle()
-                    self.error = DogModelError.customError(error: error)
+                    handleError(DogModelError.customError(error: error))
                 }
             }
             do {
-                try await Task.sleep(nanoseconds: 1 * 1_000_000_000)
+                try await Task.sleep(nanoseconds: 2 * 1_000_000_000)
             }
             catch {
-                self.hasError.toggle()
-                self.error = DogModelError.timedOut
+                handleError(DogModelError.timedOut)
             }
-        }
-        self.hasError.toggle()
-        self.error = DogModelError.timedOut
+         }
+        handleError(DogModelError.timedOut)
+    }
+    private func handleError(_ error: DogModelError) {
+        hasError.toggle()
+        self.error = error
     }
 }
 

@@ -21,6 +21,7 @@ struct DogModel : Codable, Identifiable {
     let name: String
     let weight: DogWeight
     let height: DogHeight
+    let breed_group: String?
     let bred_for: String
     let life_span: String
     let temperament: String
