@@ -14,13 +14,10 @@ struct Dogs: View {
     var body: some View {
         NavigationStack {
             List {
-                ForEach(dogsvm.dogBreeds) {
-                    dog in
-                    NavigationLink {
-                        DogDetail(dogModel: dog, dogImage: dogsvm.dogImage)
-                    }
-                    label: {
-                    Text(dog.name)
+                ForEach(Array(dogsvm.dogBreeds.enumerated()), id: \.element.id) { 
+                    (index, dog) in
+                    NavigationLink(destination: DogDetail(dogModel: dog, dogImage: dogsvm.imageArray[index])) {
+                        Text(dog.name)
                     }
                 }
             }

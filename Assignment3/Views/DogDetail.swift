@@ -45,9 +45,10 @@ struct DogDetail_Previews: PreviewProvider {
                 weight: DogWeight(imperial: "50 - 65", metric: "23 - 29"),
                 height: DogHeight(imperial: "14", metric: "36"),
                 bred_for: "Hunting by scent",
-                breed_group: "Hound",
+                //breed_group: "Hound",
                 life_span: "12 - 15 years",
                 temperament: "Tenacious, Friendly, Affectionate, Devoted, Sweet-Tempered, Gentle"
+                //dogImage: "https://cdn2.thedogapi.com/images/Sy57xx9EX_1280.jpg"
         ))
         .preferredColorScheme(.dark)
     }

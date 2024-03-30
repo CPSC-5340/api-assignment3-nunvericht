@@ -40,6 +40,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		244718322BB78A0D008CCD01 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				24B37AC02BB6649D0029A5CB /* DogsViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
 		24B37AB82BB655FF0029A5CB /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -78,7 +86,7 @@
 			isa = PBXGroup;
 			children = (
 				ACF5E03F29BE957F00DD981A /* Assignment3App.swift */,
-				24B37AC02BB6649D0029A5CB /* DogsViewModel.swift */,
+				244718322BB78A0D008CCD01 /* ViewModels */,
 				24B37ABB2BB6561F0029A5CB /* Models */,
 				24B37AB82BB655FF0029A5CB /* Views */,
 				ACF5E04329BE958000DD981A /* Assets.xcassets */,
