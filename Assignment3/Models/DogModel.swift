@@ -13,6 +13,7 @@ struct DogResults : Codable {
     let id: String
 }
 
+// utilizes UUID since ID may be duplicated
 struct DogModel : Codable, Identifiable {
     var id : UUID {
         return UUID()

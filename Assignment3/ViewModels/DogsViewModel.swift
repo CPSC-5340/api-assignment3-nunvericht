@@ -26,28 +26,41 @@ class DogsViewModel : ObservableObject {
     
     @MainActor
     func fetchData() async {
-
+        
         guard !hasFetchedData else { return }
         
-        if let apiUrl = URL(string: url) {
-            do {
-                let (data, _) = try await URLSession.shared.data(from: apiUrl)
-                guard let results = try JSONDecoder().decode([DogResults]?.self, from: data) else {
-                    self.hasError.toggle()
-                    self.error = DogModelError.decodeError
+        // added retries for network issues
+        for _ in 1...3 {
+            if let apiUrl = URL(string: url) {
+                do {
+                    let (data, _) = try await URLSession.shared.data(from: apiUrl)
+                    guard let results = try JSONDecoder().decode([DogResults]?.self, from: data) else {
+                        self.hasError.toggle()
+                        self.error = DogModelError.decodeError
+                        return
+                    }
+                    for result in results {
+                        self.imageArray.append(result.url)
+                        self.dogBreeds.append(contentsOf: result.breeds)
+                    }
+                    hasFetchedData = true
                     return
                 }
-                for result in results {
-                    self.imageArray.append(result.url)
-                    self.dogBreeds.append(contentsOf: result.breeds)
+                catch {
+                    self.hasError.toggle()
+                    self.error = DogModelError.customError(error: error)
                 }
-                hasFetchedData = true
+            }
+            do {
+                try await Task.sleep(nanoseconds: 1 * 1_000_000_000)
             }
             catch {
                 self.hasError.toggle()
-                self.error = DogModelError.customError(error: error)
+                self.error = DogModelError.timedOut
             }
         }
+        self.hasError.toggle()
+        self.error = DogModelError.timedOut
     }
 }
 
@@ -57,6 +70,7 @@ extension DogsViewModel {
         
         case decodeError
         case customError(error: Error)
+        case timedOut
         
         var errorDescription: String? {
             switch self {
@@ -64,6 +78,8 @@ extension DogsViewModel {
                 return "Decoding Error"
             case .customError(let error):
                 return error.localizedDescription
+            case .timedOut:
+                return "Network Timed Out"
             }
         }
     }

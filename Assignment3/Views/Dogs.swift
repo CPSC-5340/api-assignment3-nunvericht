@@ -25,7 +25,7 @@ struct Dogs: View {
                     await dogsvm.fetchData()
             }
             .listStyle(.grouped)
-            .navigationTitle("Dogs")
+            .navigationTitle("Dog Breeds")
             .alert(isPresented: $dogsvm.hasError, error: dogsvm.error) {
                 Text("")
             }
