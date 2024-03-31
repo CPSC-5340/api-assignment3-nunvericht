@@ -9,7 +9,7 @@ import SwiftUI
 
 struct Dogs: View {
     
-    @StateObject var dogsvm = DogsViewModel()
+    @ObservedObject var dogsvm = DogsViewModel()
     
     var body: some View {
         NavigationStack {

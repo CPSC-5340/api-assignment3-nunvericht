@@ -25,7 +25,7 @@ class DogsViewModel : ObservableObject {
     // Track unique IDs using a set as data contains duplicate IDs(dog breeds with different pictures)
     private var uniqueIds = Set<Int>()
     
-    private let url = "https://api.thedogapi.com/v1/images/search?limit=16&has_breeds=1&page=0&api_key=live_dol1qAd0D537Mg7sAefdiNUO7YdHErkkyac39Io7mVnqvQCda3makEkQ9mI56GRS"
+    private let url = "https://api.thedogapi.com/v1/images/search?limit=15&has_breeds=1&api_key=live_dol1qAd0D537Mg7sAefdiNUO7YdHErkkyac39Io7mVnqvQCda3makEkQ9mI56GRS"
     
     @MainActor
     func fetchData() async {
@@ -41,7 +41,7 @@ class DogsViewModel : ObservableObject {
 
         var retryDelay = initialDelay
 
-        if retries < 3 && !hasFetchedData {
+        while retries < 3 && !hasFetchedData{
             if let apiUrl = URL(string: url) {
                 do {
                     let (data, _) = try await URLSession.shared.data(from: apiUrl)
@@ -77,7 +77,7 @@ class DogsViewModel : ObservableObject {
         handleError(DogModelError.timedOut)
     }
     private func handleError(_ error: DogModelError) {
-        hasError.toggle()
+        hasError = true
         self.error = error
     }
 }
