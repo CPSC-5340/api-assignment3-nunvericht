@@ -47,6 +47,7 @@ struct DogDetail: View {
 struct DogDetail_Previews: PreviewProvider {
     static var previews: some View {
         DogDetail(dogModel: DogModel(
+                id: 1234,
                 name: "Basset Hound",
                 weight: DogWeight(imperial: "50 - 65", metric: "23 - 29"),
                 height: DogHeight(imperial: "14", metric: "36"),

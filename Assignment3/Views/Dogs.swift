@@ -1,5 +1,5 @@
 //
-// Dog.swift : Assignment3
+// Dogs.swift : Assignment3
 //
 // Created by Nicholl Unvericht on 3/27/24.
 
@@ -9,7 +9,7 @@ import SwiftUI
 
 struct Dogs: View {
     
-    @ObservedObject var dogsvm = DogsViewModel()
+    @StateObject var dogsvm = DogsViewModel()
     
     var body: some View {
         NavigationStack {
@@ -22,7 +22,7 @@ struct Dogs: View {
                 }
             }
             .task {
-                    await dogsvm.fetchData()
+                await dogsvm.fetchData()
             }
             .listStyle(.grouped)
             .navigationTitle("Dog Breeds")
@@ -32,6 +32,7 @@ struct Dogs: View {
         }
     }
 }
+
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {

@@ -22,15 +22,26 @@ class DogsViewModel : ObservableObject {
     // Boolean to stop after 14, since api returns random results
     private var hasFetchedData = false
     
-    private let url = "https://api.thedogapi.com/v1/images/search?limit=14&has_breeds=1&page=0&api_key=live_dol1qAd0D537Mg7sAefdiNUO7YdHErkkyac39Io7mVnqvQCda3makEkQ9mI56GRS"
+    // Track unique IDs using a set as data contains duplicate IDs(dog breeds with different pictures)
+    private var uniqueIds = Set<Int>()
+    
+    private let url = "https://api.thedogapi.com/v1/images/search?limit=16&has_breeds=1&page=0&api_key=live_dol1qAd0D537Mg7sAefdiNUO7YdHErkkyac39Io7mVnqvQCda3makEkQ9mI56GRS"
     
     @MainActor
     func fetchData() async {
         
-        guard !hasFetchedData else { return }
+        guard !hasFetchedData else {
+            return
+        }
         
-        // added retries for network issues
-        for _ in 1...3 {
+        // variables for network delays
+        var retries = 0
+        let initialDelay = 1
+        let maxDelay = 8
+
+        var retryDelay = initialDelay
+
+        if retries < 3 && !hasFetchedData {
             if let apiUrl = URL(string: url) {
                 do {
                     let (data, _) = try await URLSession.shared.data(from: apiUrl)
@@ -39,8 +50,12 @@ class DogsViewModel : ObservableObject {
                         return
                     }
                     for result in results {
-                        self.imageArray.append(result.url)
-                        self.dogBreeds.append(contentsOf: result.breeds)
+                        let id = result.breeds.first?.id ?? 0
+                        if !uniqueIds.contains(id) && dogBreeds.count < 15 {
+                            imageArray.append(result.url)
+                            dogBreeds.append(contentsOf: result.breeds)
+                            uniqueIds.insert(id)
+                        }
                     }
                     hasFetchedData = true
                     hasError = false
@@ -51,7 +66,9 @@ class DogsViewModel : ObservableObject {
                 }
             }
             do {
-                try await Task.sleep(nanoseconds: 2 * 1_000_000_000)
+                try await Task.sleep(nanoseconds: UInt64(retryDelay) * 1_000_000_000)
+                retryDelay = min(retryDelay * 2, maxDelay)
+                retries += 1
             }
             catch {
                 handleError(DogModelError.timedOut)
